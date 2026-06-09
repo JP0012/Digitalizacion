@@ -560,7 +560,7 @@ function tomarFoto(){
     const ctx =
     canvas.getContext("2d");
 
-    const escala = 0.75;
+    const escala = 0.30;
 
         canvas.width =
         video.videoWidth * escala;
@@ -583,6 +583,13 @@ function tomarFoto(){
         canvas.height
     );
 
+    alert(
+    "Resolución: " +
+    video.videoWidth +
+    " x " +
+    video.videoHeight
+    );
+
     const imagen =
     canvas.toDataURL(
         "image/jpeg",
@@ -592,6 +599,8 @@ function tomarFoto(){
     imagenes.push(imagen);
 
     renderizarMiniaturas();
+
+    
 
 }
 
@@ -782,14 +791,42 @@ if(esMovil){
         imagenes.length
     );
 
-    for(
-        let i = 0;
-        i < imagenes.length;
-        i++
-    )
-    alert(
-        "Terminé de agregar imágenes al PDF"
+   for(
+    let i = 0;
+    i < imagenes.length;
+    i++
+){
+
+    if(i > 0){
+
+        pdf.addPage();
+
+    }
+
+    const ancho =
+    pdf.internal
+    .pageSize
+    .getWidth();
+
+    const alto =
+    pdf.internal
+    .pageSize
+    .getHeight();
+
+    pdf.addImage(
+        imagenes[i],
+        "JPEG",
+        5,
+        5,
+        ancho - 10,
+        alto - 10
     );
+
+}
+
+alert(
+    "Terminé de agregar imágenes al PDF"
+);
     {
 
         if(i > 0){
