@@ -810,6 +810,17 @@ if(esMovil){
 const pdfBlob =
 pdf.output("blob");
 
+console.log(
+    "PDF MB:",
+    (pdfBlob.size / 1024 / 1024).toFixed(2)
+);
+
+alert(
+    "PDF: " +
+    (pdfBlob.size / 1024 / 1024).toFixed(2) +
+    " MB"
+);
+
 const archivo =
 new File(
     [pdfBlob],
@@ -856,6 +867,8 @@ else{
     document.body.appendChild(
         enlace
     );
+
+    alert("Intentando descargar el archivo....")
 
     enlace.click();
 
