@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Digitalización de Correspondencia</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<style>
+
+body{
+    font-family:Segoe UI,sans-serif;
+    background:#f4f6f9;
+    margin:0;
+    padding:20px;
+}
+
+.card{
+    max-width:900px;
+    margin:auto;
+    background:white;
+    padding:25px;
+    border-radius:12px;
+    box-shadow:0 2px 10px rgba(0,0,0,.1);
+}
+
+h1{
+    color:#0078d7;
+}
+
+video{
+    width:100%;
+    max-height:500px;
+    border-radius:10px;
+    background:black;
+}
+
+button{
+    background:#0078d7;
+    color:white;
+    border:none;
+    padding:12px 20px;
+    border-radius:8px;
+    cursor:pointer;
+    margin-top:10px;
+    margin-right:10px;
+}
+
+button:hover{
+    opacity:.9;
+}
+
+.preview{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    margin-top:20px;
+}
+
+.preview-item{
+    position:relative;
+    display:inline-block;
+}
+
+.preview img{
+    width:120px;
+    border-radius:8px;
+    border:1px solid #ccc;
+}
+
+.btn-eliminar{
+    position:absolute;
+    top:5px;
+    right:5px;
+    width:28px;
+    height:28px;
+    border-radius:50%;
+    border:none;
+    background:#dc3545;
+    color:white;
+    cursor:pointer;
+    font-size:14px;
+    font-weight:bold;
+    padding:0;
+    margin:0;
+    line-height:28px;
+}
+
+.btn-eliminar:hover{
+    background:#c82333;
+}
+
+.info{
+    margin-top:15px;
+    font-weight:bold;
+}
+
+/* Modal */
+
+.modal{
+    display:none;
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,.5);
+    justify-content:center;
+    align-items:center;
+    z-index:9999;
+}
+
+.modal-contenido{
+    background:white;
+    padding:25px;
+    border-radius:12px;
+    width:90%;
+    max-width:400px;
+    box-shadow:0 4px 20px rgba(0,0,0,.2);
+}
+
+.modal-contenido h3{
+    margin-top:0;
+}
+
+.checkbox-container{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-top:15px;
+}
+
+.modal-botones{
+    margin-top:20px;
+    display:flex;
+    justify-content:flex-end;
+    gap:10px;
+}
+
+.btn-cancelar{
+    background:#6c757d;
+}
+
+.btn-confirmar{
+    background:#dc3545;
+}
+
+.selector-hoja{
+    margin-bottom:15px;
+}
+
+.selector-hoja select{
+    padding:8px 12px;
+    border-radius:6px;
+    border:1px solid #ccc;
+}
+
+.camara-container{
+    position:relative;
+    width:100%;
+    height:500px;
+    overflow:hidden;
+    border-radius:10px;
+    background:black;
+}
+
+.camara-container video{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+}
+
+/* Oscurece el exterior */
+.overlay{
+    position:absolute;
+    inset:0;
+    background:rgba(0,0,0,.45);
+    pointer-events:none;
+}
+
+/* Ventana transparente */
+.guia-documento{
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    z-index:20;
+    pointer-events:none;
+}
+
+/* Carta */
+.guia-carta,
+.guia-oficio{
+    width:0;
+    height:0;
+}
+
+/* Área transparente */
+.guia-documento .ventana{
+    width:100%;
+    height:100%;
+    position:relative;
+    background:transparent;
+}
+
+/* Esquinas tipo escáner */
+.esquina{
+    position:absolute;
+    width:40px;
+    height:40px;
+    border-color:#00ff66;
+    border-style:solid;
+    border-width:0;
+}
+
+.sup-izq{
+    top:0;
+    left:0;
+    border-top-width:5px;
+    border-left-width:5px;
+}
+
+.sup-der{
+    top:0;
+    right:0;
+    border-top-width:5px;
+    border-right-width:5px;
+}
+
+.inf-izq{
+    bottom:0;
+    left:0;
+    border-bottom-width:5px;
+    border-left-width:5px;
+}
+
+.inf-der{
+    bottom:0;
+    right:0;
+    border-bottom-width:5px;
+    border-right-width:5px;
+}
+
+.etiqueta-guia{
+    position:absolute;
+    top:-35px;
+    left:0;
+    background:#00ff66;
+    color:black;
+    padding:5px 10px;
+    border-radius:5px;
+    font-size:12px;
+    font-weight:bold;
+}
+
+</style>
+</head>
+<body>
+
+<div class="card">
+
+<h1>Sistema de Digitalización</h1>
+
+<p>
+Correlativo:
+<strong id="correlativo"></strong>
+</p>
+
+<div class="selector-hoja">
+
+    <label>
+        <strong>Tamaño de hoja:</strong>
+    </label>
+
+    <select id="tamanoHoja">
+        <option value="carta">
+            Carta (8.5 x 11)
+        </option>
+
+        <option value="oficio">
+            Oficio (8.5 x 13)
+        </option>
+    </select>
+
+</div>
+
+<div class="camara-container">
+
+    <video
+        id="video"
+        autoplay
+        playsinline>
+    </video>
+
+    <div class="overlay"></div>
+
+    <div
+        id="guiaDocumento"
+        class="guia-documento guia-carta">
+
+        <div class="etiqueta-guia">
+            CARTA 8.5 x 11
+        </div>
+
+        <div class="ventana">
+
+            <div class="esquina sup-izq"></div>
+            <div class="esquina sup-der"></div>
+            <div class="esquina inf-izq"></div>
+            <div class="esquina inf-der"></div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<br>
+
+<button onclick="tomarFoto()">
+📷 Tomar Foto
+</button>
+
+<button onclick="generarPDF()">
+📄 Generar PDF
+</button>
+
+<div class="info">
+Páginas capturadas:
+<span id="contador">0</span>
+</div>
+
+<div
+class="preview"
+id="preview">
+</div>
+
+<p id="estado"></p>
+
+<canvas
+id="canvas"
+style="display:none">
+</canvas>
+
+</div>
+
+<!-- Modal eliminar -->
+
+<div id="modalEliminar" class="modal">
+
+    <div class="modal-contenido">
+
+        <h3>Eliminar página</h3>
+
+        <p>
+            ¿Desea eliminar esta página?
+        </p>
+
+        <label class="checkbox-container">
+
+            <input
+                type="checkbox"
+                id="noMostrarConfirmacion">
+
+            No volver a mostrar este mensaje
+
+        </label>
+
+        <div class="modal-botones">
+
+            <button
+                class="btn-cancelar"
+                onclick="cerrarModal()">
+
+                Cancelar
+
+            </button>
+
+            <button
+                class="btn-confirmar"
+                onclick="confirmarEliminacion()">
+
+                Eliminar
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+const params =
+new URLSearchParams(
+window.location.search
+);
+
+sessionStorage.removeItem(
+    "omitirConfirmacionEliminar"
+);
+
+const correlativo =
+params.get("id") ||
+"DOCUMENTO";
+
+document
+.getElementById("correlativo")
+.textContent = correlativo;
+
+const video =
+document.getElementById("video");
+
+const canvas =
+document.getElementById("canvas");
+
+const preview =
+document.getElementById("preview");
+
+const imagenes = [];
+
+const selectorTamano =
+document.getElementById(
+    "tamanoHoja"
+);
+
+const guiaDocumento =
+document.getElementById(
+    "guiaDocumento"
+);
+
+let indiceAEliminar = null;
+
+function actualizarGuia(){
+
+    const etiqueta =
+    guiaDocumento.querySelector(
+        ".etiqueta-guia"
+    );
+
+    const anchoVideo =
+    video.clientWidth;
+
+    const altoVideo =
+    video.clientHeight;
+
+    if(
+        anchoVideo === 0 ||
+        altoVideo === 0
+    ){
+        return;
+    }
+
+    let ancho;
+    let alto;
+
+    if(
+        selectorTamano.value === "carta"
+    ){
+
+        etiqueta.innerHTML =
+        "CARTA 8.5 x 11";
+
+        /*
+        Ocupa aprox. 88% de la altura visible
+        */
+        alto =
+        altoVideo * 0.88;
+
+        ancho =
+        alto * (8.5 / 11);
+
+    }
+    else{
+
+        etiqueta.innerHTML =
+        "OFICIO 8.5 x 13";
+
+        /*
+        Ocupa aprox. 92% de la altura visible
+        */
+        alto =
+        altoVideo * 0.92;
+
+        ancho =
+        alto * (8.5 / 13);
+
+    }
+
+    guiaDocumento.style.width =
+    ancho + "px";
+
+    guiaDocumento.style.height =
+    alto + "px";
+
+}
+
+selectorTamano.addEventListener(
+    "change",
+    actualizarGuia
+);
+
+actualizarGuia();
+
+async function iniciarCamara(){
+
+    try{
+
+        const stream =
+        await navigator
+        .mediaDevices
+        .getUserMedia({
+
+            video:{
+    facingMode:{
+        ideal:"environment"
+    },
+    width:{
+        ideal:4000
+    },
+    height:{
+        ideal:3000
+    }
+},
+
+            audio:false
+
+        });
+
+        video.srcObject =
+        stream;
+
+        video.onloadedmetadata = () => {
+
+    actualizarGuia();
+
+};
+
+    }
+
+    
+
+    catch(error){
+
+        alert(
+            "No fue posible acceder a la cámara.\n\n" +
+            error.message
+        );
+
+    }
+
+}
+
+function tomarFoto(){
+
+    const ctx =
+    canvas.getContext("2d");
+
+    canvas.width =
+    video.videoWidth;
+
+    canvas.height =
+    video.videoHeight;
+
+    console.log(
+        "Resolución capturada:",
+        video.videoWidth,
+        "x",
+        video.videoHeight
+    );
+
+    ctx.drawImage(
+        video,
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+    const imagen =
+    canvas.toDataURL(
+        "image/png",
+    );
+
+    imagenes.push(imagen);
+
+    renderizarMiniaturas();
+
+}
+
+function renderizarMiniaturas(){
+
+    preview.innerHTML = "";
+
+    imagenes.forEach((imagen,index)=>{
+
+        const contenedor =
+        document.createElement("div");
+
+        contenedor.className =
+        "preview-item";
+
+        const miniatura =
+        document.createElement("img");
+
+        miniatura.src =
+        imagen;
+
+        const botonEliminar =
+        document.createElement("button");
+
+        botonEliminar.className =
+        "btn-eliminar";
+
+        botonEliminar.innerHTML =
+        "✕";
+
+        botonEliminar.onclick =
+        function(){
+
+            eliminarImagen(index);
+
+        };
+
+        contenedor.appendChild(
+            miniatura
+        );
+
+        contenedor.appendChild(
+            botonEliminar
+        );
+
+        preview.appendChild(
+            contenedor
+        );
+
+    });
+
+    document
+    .getElementById("contador")
+    .textContent =
+    imagenes.length;
+
+}
+
+function eliminarImagen(index){
+
+    const noMostrar =
+    sessionStorage.getItem(
+        "omitirConfirmacionEliminar"
+    );
+
+    if(noMostrar === "true"){
+
+        imagenes.splice(index,1);
+
+        renderizarMiniaturas();
+
+        return;
+
+    }
+
+    indiceAEliminar = index;
+
+    document
+    .getElementById("modalEliminar")
+    .style.display =
+    "flex";
+
+}
+
+function cerrarModal(){
+
+    document
+    .getElementById("modalEliminar")
+    .style.display =
+    "none";
+
+    document
+    .getElementById(
+        "noMostrarConfirmacion"
+    )
+    .checked = false;
+
+}
+
+function confirmarEliminacion(){
+
+    const noMostrar =
+    document
+    .getElementById(
+        "noMostrarConfirmacion"
+    )
+    .checked;
+
+    if(noMostrar){
+
+        sessionStorage.setItem(
+            "omitirConfirmacionEliminar",
+            "true"
+        );
+
+    }
+
+    imagenes.splice(
+        indiceAEliminar,
+        1
+    );
+
+    renderizarMiniaturas();
+
+    cerrarModal();
+
+}
+
+async function generarPDF(){
+
+    if(imagenes.length===0){
+
+        alert(
+            "Debe capturar al menos una página."
+        );
+
+        return;
+
+    }
+
+   const esMovil =
+/Android|iPhone|iPad|iPod/i.test(
+    navigator.userAgent
+);
+
+let nombreLimpio =
+correlativo;
+
+if(esMovil){
+
+    const nombreArchivo =
+    prompt(
+        "Ingrese el nombre del documento:",
+        correlativo
+    );
+
+    if(
+        nombreArchivo === null ||
+        nombreArchivo.trim() === ""
+    ){
+        return;
+    }
+
+    nombreLimpio =
+    nombreArchivo
+    .trim()
+    .replace(/[\\/:*?"<>|#]/g,"_");
+
+}
+
+    document
+    .getElementById("estado")
+    .innerHTML =
+    "Generando PDF...";
+
+    const { jsPDF } =
+    window.jspdf;
+
+    const pdf =
+    new jsPDF(
+        "p",
+        "mm",
+        "a4"
+    );
+
+    for(
+        let i = 0;
+        i < imagenes.length;
+        i++
+    ){
+
+        if(i > 0){
+
+            pdf.addPage();
+
+        }
+
+        const ancho =
+        pdf.internal
+        .pageSize
+        .getWidth();
+
+        const alto =
+        pdf.internal
+        .pageSize
+        .getHeight();
+
+        pdf.addImage(
+            imagenes[i],
+            "PNG",
+            5,
+            5,
+            ancho - 10,
+            alto - 10
+        );
+
+    }
+
+const pdfBlob =
+pdf.output("blob");
+
+const archivo =
+new File(
+    [pdfBlob],
+    nombreLimpio.trim() + ".pdf",
+    {
+        type:"application/pdf"
+    }
+);
+
+
+
+if(
+    esMovil &&
+    navigator.share &&
+    navigator.canShare &&
+    navigator.canShare({
+        files:[archivo]
+    })
+){
+
+    await navigator.share({
+
+        files:[archivo],
+        title:nombreLimpio.trim()
+
+    });
+
+}
+else{
+
+    const pdfUrl =
+    URL.createObjectURL(pdfBlob);
+
+    const enlace =
+    document.createElement("a");
+
+    enlace.href =
+    pdfUrl;
+
+    enlace.download =
+    nombreLimpio.trim() + ".pdf";
+
+    document.body.appendChild(
+        enlace
+    );
+
+    enlace.click();
+
+    document.body.removeChild(
+        enlace
+    );
+
+    setTimeout(()=>{
+
+        URL.revokeObjectURL(
+            pdfUrl
+        );
+
+    },1000);
+
+}
+
+imagenes.length = 0;
+
+renderizarMiniaturas();
+
+canvas.width = 0;
+canvas.height = 0;
+
+    document
+    .getElementById("estado")
+    .innerHTML =
+    "PDF generado correctamente.";
+
+
+
+}
+window.addEventListener(
+    "resize",
+    actualizarGuia
+);
+
+iniciarCamara();
+
+</script>
+
+</body>
+</html>
