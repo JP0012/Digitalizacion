@@ -560,11 +560,13 @@ function tomarFoto(){
     const ctx =
     canvas.getContext("2d");
 
-    canvas.width =
-    video.videoWidth;
+    const escala = 0.5;
 
-    canvas.height =
-    video.videoHeight;
+        canvas.width =
+        video.videoWidth * escala;
+
+        canvas.height =
+        video.videoHeight * escala;
 
     console.log(
         "Resolución capturada:",
@@ -583,7 +585,8 @@ function tomarFoto(){
 
     const imagen =
     canvas.toDataURL(
-        "image/png",
+        "image/jpeg",
+        0.85
     );
 
     imagenes.push(imagen);
@@ -774,11 +777,20 @@ if(esMovil){
         "a4"
     );
 
+    alert(
+        "Imágenes: "+
+        imagenes.length
+    );
+
     for(
         let i = 0;
         i < imagenes.length;
         i++
-    ){
+    )
+    alert(
+        "Terminé de agregar imágenes al PDF"
+    );
+    {
 
         if(i > 0){
 
