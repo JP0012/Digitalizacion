@@ -560,7 +560,7 @@ function tomarFoto(){
     const ctx =
     canvas.getContext("2d");
 
-    const escala = 0.5;
+    const escala = 0.75;
 
         canvas.width =
         video.videoWidth * escala;
@@ -586,7 +586,7 @@ function tomarFoto(){
     const imagen =
     canvas.toDataURL(
         "image/jpeg",
-        0.85
+        0.9
     );
 
     imagenes.push(imagen);
@@ -819,8 +819,18 @@ if(esMovil){
 
     }
 
+console.time("GeneracionBlob");
+
 const pdfBlob =
 pdf.output("blob");
+
+console.timeEnd("GeneracionBlob");
+
+alert(
+    "Blob creado\n\nTamaño: " +
+    (pdfBlob.size / 1024 / 1024).toFixed(2) +
+    " MB"
+);
 
 alert("blob creado")
 
