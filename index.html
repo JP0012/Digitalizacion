@@ -822,6 +822,8 @@ if(esMovil){
 const pdfBlob =
 pdf.output("blob");
 
+alert("blob creado")
+
 console.log(
     "PDF MB:",
     (pdfBlob.size / 1024 / 1024).toFixed(2)
@@ -842,7 +844,7 @@ new File(
     }
 );
 
-
+alert("Archivo creado");
 
 if(
     esMovil &&
@@ -853,7 +855,9 @@ if(
     })
 ){
 
-    alert("PDF Generado correctamente")
+
+    alert("PDF Generado correctamente");
+    alert("Voy a abrir compartir")
     await navigator.share({
 
         files:[archivo],
@@ -861,7 +865,10 @@ if(
 
     });
 
+    alert("Regresé de compartir");
 }
+
+
 else{
 
     const pdfUrl =
