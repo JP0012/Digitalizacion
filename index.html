@@ -536,12 +536,12 @@ async function iniciarCamara(){
 
         video.onloadedmetadata = () => {
 
-            alert(
-        "Resolución cámara: " +
-        video.videoWidth +
-        " x " +
-        video.videoHeight
-    );
+        //    alert(
+       // "Resolución cámara: " +
+       // video.videoWidth +
+       // " x " +
+       // video.videoHeight
+   // );
 
     actualizarGuia();
 
@@ -590,12 +590,12 @@ function tomarFoto(){
         canvas.height
     );
 
-    alert(
-    "Resolución: " +
-    video.videoWidth +
-    " x " +
-    video.videoHeight
-    );
+   // alert(
+   // "Resolución: " +
+   // video.videoWidth +
+   // " x " +
+   // video.videoHeight
+   // );
 
     const imagen =
     canvas.toDataURL(
@@ -603,12 +603,12 @@ function tomarFoto(){
         0.9
     );
 
-    alert(
-    "Imagen KB: " +
-    Math.round(
-        imagen.length / 1024
-    )
-);
+   // alert(
+   // "Imagen KB: " +
+   // Math.round(
+    //    imagen.length / 1024
+    //)
+//);
 
     imagenes.push(imagen);
 
@@ -747,9 +747,9 @@ async function generarPDF(){
 
     if(imagenes.length===0){
 
-        alert(
-            "Debe capturar al menos una página."
-        );
+        //alert(
+            //"Debe capturar al menos una página."
+        //);
 
         return;
 
@@ -763,12 +763,12 @@ async function generarPDF(){
 let nombreLimpio =
 correlativo;
 
-alert(
-    "canShare: " +
-    navigator.canShare({
-        files:[archivo]
-    })
-);
+//alert(
+    //"canShare: " +
+    //navigator.canShare({
+        //files:[archivo]
+    //})
+//);
 
 if(esMovil){
 
@@ -807,10 +807,10 @@ if(esMovil){
         "a4"
     );
 
-    alert(
-        "Imágenes: "+
-        imagenes.length
-    );
+   // alert(
+       // "Imágenes: "+
+        //imagenes.length
+    //);
 
    for(
     let i = 0;
@@ -845,53 +845,20 @@ if(esMovil){
 
 }
 
-alert(
-    "Terminé de agregar imágenes al PDF"
-);
+//alert(
+   // "Terminé de agregar imágenes al PDF"
+//);
 
-for(
-    let i = 0;
-    i < imagenes.length;
-    i++
-){
+//alert(
+ //   "Terminé de agregar imágenes al PDF"
+//);
 
-    if(i > 0){
-
-        pdf.addPage();
-
-    }
-
-    const ancho =
-    pdf.internal
-    .pageSize
-    .getWidth();
-
-    const alto =
-    pdf.internal
-    .pageSize
-    .getHeight();
-
-    pdf.addImage(
-        imagenes[i],
-        "JPEG",
-        5,
-        5,
-        ancho - 10,
-        alto - 10
-    );
-
-}
-
-alert(
-    "Terminé de agregar imágenes al PDF"
-);
-
-alert("Voy a generar el ArrayBuffer");
+//alert("Voy a generar el ArrayBuffer");
 
 const pdfArrayBuffer =
 pdf.output("arraybuffer");
 
-alert("ArrayBuffer creado");
+//alert("ArrayBuffer creado");
 
 const pdfBlob =
 new Blob(
@@ -901,26 +868,26 @@ new Blob(
     }
 );
 
-alert("Blob creado");
+//alert("Blob creado");
 
-alert(
-    "Blob creado\n\nTamaño: " +
-    (pdfBlob.size / 1024 / 1024).toFixed(2) +
-    " MB"
-);
+//alert(
+    //"Blob creado\n\nTamaño: " +
+    //(pdfBlob.size / 1024 / 1024).toFixed(2) +
+    //" MB"
+//);
 
-alert("blob creado")
+//alert("blob creado")
 
 console.log(
     "PDF MB:",
     (pdfBlob.size / 1024 / 1024).toFixed(2)
 );
 
-alert(
-    "PDF: " +
-    (pdfBlob.size / 1024 / 1024).toFixed(2) +
-    " MB"
-);
+//alert(
+//    "PDF: " +
+  //  (pdfBlob.size / 1024 / 1024).toFixed(2) +
+    //" MB"
+//);
 
 const archivo =
 new File(
@@ -931,7 +898,7 @@ new File(
     }
 );
 
-alert("Archivo creado");
+//alert("Archivo creado");
 
 if(
     esMovil &&
@@ -943,18 +910,28 @@ if(
 ){
 
 
-    alert("PDF Generado correctamente");
-    alert("Voy a abrir compartir")
+    //alert("PDF Generado correctamente");
+    //alert("Voy a abrir compartir")
     try{
 
-    alert("Entrando a navigator.share");
+   // alert("Entrando a navigator.share");
+
+    try{
 
     await navigator.share({
-
         files:[archivo],
         title:nombreLimpio.trim()
-
     });
+
+}
+catch(error){
+
+    alert(
+        "No se pudo abrir el menú compartir.\n\n" +
+        error.message
+    );
+
+}
 
     alert("Share finalizado");
 
