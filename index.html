@@ -536,13 +536,6 @@ async function iniciarCamara(){
 
         video.onloadedmetadata = () => {
 
-        //    alert(
-       // "Resolución cámara: " +
-       // video.videoWidth +
-       // " x " +
-       // video.videoHeight
-   // );
-
     actualizarGuia();
 
 };
@@ -590,25 +583,11 @@ function tomarFoto(){
         canvas.height
     );
 
-   // alert(
-   // "Resolución: " +
-   // video.videoWidth +
-   // " x " +
-   // video.videoHeight
-   // );
-
     const imagen =
     canvas.toDataURL(
         "image/jpeg",
         0.9
     );
-
-   // alert(
-   // "Imagen KB: " +
-   // Math.round(
-    //    imagen.length / 1024
-    //)
-//);
 
     imagenes.push(imagen);
 
@@ -747,10 +726,6 @@ async function generarPDF(){
 
     if(imagenes.length===0){
 
-        //alert(
-            //"Debe capturar al menos una página."
-        //);
-
         return;
 
     }
@@ -763,32 +738,26 @@ async function generarPDF(){
 let nombreLimpio =
 correlativo;
 
-//alert(
-    //"canShare: " +
-    //navigator.canShare({
-        //files:[archivo]
-    //})
-//);
 
 if(esMovil){
 
     const nombreArchivo =
-    prompt(
-        "Ingrese el nombre del documento:",
-        correlativo
-    );
+prompt(
+    "Ingrese el nombre del documento:",
+    correlativo
+);
 
-    if(
-        nombreArchivo === null ||
-        nombreArchivo.trim() === ""
-    ){
-        return;
-    }
+if(
+    nombreArchivo === null ||
+    nombreArchivo.trim() === ""
+){
+    return;
+}
 
-    nombreLimpio =
-    nombreArchivo
-    .trim()
-    .replace(/[\\/:*?"<>|#]/g,"_");
+const nombreLimpio =
+nombreArchivo
+.trim()
+.replace(/[\\/:*?"<>|#]/g,"_");
 
 }
 
@@ -807,10 +776,6 @@ if(esMovil){
         "a4"
     );
 
-   // alert(
-       // "Imágenes: "+
-        //imagenes.length
-    //);
 
    for(
     let i = 0;
@@ -845,20 +810,8 @@ if(esMovil){
 
 }
 
-//alert(
-   // "Terminé de agregar imágenes al PDF"
-//);
-
-//alert(
- //   "Terminé de agregar imágenes al PDF"
-//);
-
-//alert("Voy a generar el ArrayBuffer");
-
 const pdfArrayBuffer =
 pdf.output("arraybuffer");
-
-//alert("ArrayBuffer creado");
 
 const pdfBlob =
 new Blob(
@@ -868,26 +821,10 @@ new Blob(
     }
 );
 
-//alert("Blob creado");
-
-//alert(
-    //"Blob creado\n\nTamaño: " +
-    //(pdfBlob.size / 1024 / 1024).toFixed(2) +
-    //" MB"
-//);
-
-//alert("blob creado")
-
 console.log(
     "PDF MB:",
     (pdfBlob.size / 1024 / 1024).toFixed(2)
 );
-
-//alert(
-//    "PDF: " +
-  //  (pdfBlob.size / 1024 / 1024).toFixed(2) +
-    //" MB"
-//);
 
 const archivo =
 new File(
@@ -898,8 +835,6 @@ new File(
     }
 );
 
-//alert("Archivo creado");
-
 if(
     esMovil &&
     navigator.share &&
@@ -909,12 +844,7 @@ if(
     })
 ){
 
-
-    //alert("PDF Generado correctamente");
-    //alert("Voy a abrir compartir")
     try{
-
-   // alert("Entrando a navigator.share");
 
     try{
 
