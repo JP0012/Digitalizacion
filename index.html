@@ -773,22 +773,22 @@ correlativo;
 if(esMovil){
 
     const nombreArchivo =
-        prompt(
-            "Ingrese el nombre del documento:",
-            correlativo
-        );
+prompt(
+    "Ingrese el nombre del documento:",
+    correlativo
+);
 
-        if(
-            nombreArchivo === null ||
-            nombreArchivo.trim() === ""
-        ){
-            return;
-        }
+if(
+    nombreArchivo === null ||
+    nombreArchivo.trim() === ""
+){
+    return;
+}
 
-        const nombreLimpio =
-        nombreArchivo
-        .trim()
-        .replace(/[\\/:*?"<>|#]/g,"_");
+let nombreLimpio =
+nombreArchivo
+.trim()
+.replace(/[\\/:*?"<>|#]/g,"_");
 
 }
 
@@ -969,7 +969,7 @@ else{
         enlace
     );
 
-    alert("Intentando descargar el archivo....")
+    //alert("Intentando descargar el archivo....")
 
     enlace.click();
 
