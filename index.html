@@ -865,8 +865,20 @@ alert(
 
 console.time("GeneracionBlob");
 
+const pdfArrayBuffer =
+pdf.output("arraybuffer");
+
+alert("ArrayBuffer creado");
+
 const pdfBlob =
-pdf.output("blob");
+new Blob(
+    [pdfArrayBuffer],
+    {
+        type:"application/pdf"
+    }
+);
+
+alert("Blob creado");
 
 console.timeEnd("GeneracionBlob");
 
