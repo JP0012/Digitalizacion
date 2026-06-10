@@ -603,6 +603,13 @@ function tomarFoto(){
         0.9
     );
 
+    alert(
+    "Imagen KB: " +
+    Math.round(
+        imagen.length / 1024
+    )
+);
+
     imagenes.push(imagen);
 
     renderizarMiniaturas();
@@ -756,6 +763,13 @@ async function generarPDF(){
 let nombreLimpio =
 correlativo;
 
+alert(
+    "canShare: " +
+    navigator.canShare({
+        files:[archivo]
+    })
+);
+
 if(esMovil){
 
     const nombreArchivo =
@@ -889,8 +903,6 @@ new Blob(
 
 alert("Blob creado");
 
-console.timeEnd("GeneracionBlob");
-
 alert(
     "Blob creado\n\nTamaño: " +
     (pdfBlob.size / 1024 / 1024).toFixed(2) +
@@ -933,12 +945,30 @@ if(
 
     alert("PDF Generado correctamente");
     alert("Voy a abrir compartir")
+    try{
+
+    alert("Entrando a navigator.share");
+
     await navigator.share({
 
         files:[archivo],
         title:nombreLimpio.trim()
 
     });
+
+    alert("Share finalizado");
+
+}
+catch(error){
+
+    alert(
+        "Error Share:\n\n" +
+        error.message
+    );
+
+    console.error(error);
+
+}
 
     alert("Regresé de compartir");
 }
