@@ -520,10 +520,10 @@ async function iniciarCamara(){
         ideal:"environment"
     },
     width:{
-        ideal:4000
+        ideal:1280
     },
     height:{
-        ideal:3000
+        ideal:720
     }
 },
 
@@ -535,6 +535,13 @@ async function iniciarCamara(){
         stream;
 
         video.onloadedmetadata = () => {
+
+            alert(
+        "Resolución cámara: " +
+        video.videoWidth +
+        " x " +
+        video.videoHeight
+    );
 
     actualizarGuia();
 
@@ -560,7 +567,7 @@ function tomarFoto(){
     const ctx =
     canvas.getContext("2d");
 
-    const escala = 0.30;
+    const escala = 1;
 
         canvas.width =
         video.videoWidth * escala;
@@ -847,7 +854,7 @@ alert(
 
         pdf.addImage(
             imagenes[i],
-            "PNG",
+            "JPEG",
             5,
             5,
             ancho - 10,
