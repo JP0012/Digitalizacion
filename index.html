@@ -834,36 +834,45 @@ if(esMovil){
 alert(
     "Terminé de agregar imágenes al PDF"
 );
-    {
 
-        if(i > 0){
+for(
+    let i = 0;
+    i < imagenes.length;
+    i++
+){
 
-            pdf.addPage();
+    if(i > 0){
 
-        }
-
-        const ancho =
-        pdf.internal
-        .pageSize
-        .getWidth();
-
-        const alto =
-        pdf.internal
-        .pageSize
-        .getHeight();
-
-        pdf.addImage(
-            imagenes[i],
-            "JPEG",
-            5,
-            5,
-            ancho - 10,
-            alto - 10
-        );
+        pdf.addPage();
 
     }
 
-console.time("GeneracionBlob");
+    const ancho =
+    pdf.internal
+    .pageSize
+    .getWidth();
+
+    const alto =
+    pdf.internal
+    .pageSize
+    .getHeight();
+
+    pdf.addImage(
+        imagenes[i],
+        "JPEG",
+        5,
+        5,
+        ancho - 10,
+        alto - 10
+    );
+
+}
+
+alert(
+    "Terminé de agregar imágenes al PDF"
+);
+
+alert("Voy a generar el ArrayBuffer");
 
 const pdfArrayBuffer =
 pdf.output("arraybuffer");
