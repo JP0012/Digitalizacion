@@ -773,7 +773,7 @@ correlativo;
 //if(esMovil)
 {
 
-    const nombreArchivo =
+const nombreArchivo =
 prompt(
     "Ingrese el nombre del documento:",
     correlativo
@@ -786,7 +786,7 @@ if(
     return;
 }
 
-let nombreLimpio =
+nombreLimpio =
 nombreArchivo
 .trim()
 .replace(/[\\/:*?"<>|#]/g,"_");
@@ -899,15 +899,15 @@ new File(
     }
 );
 
+alert(
+    "Nombre final: " +
+    nombreLimpio
+);
 //alert("Archivo creado");
 
 if(
     esMovil &&
-    navigator.share &&
-    navigator.canShare &&
-    navigator.canShare({
-        files:[archivo]
-    })
+    navigator.share
 ){
 
 
@@ -950,6 +950,7 @@ catch(error){
 
     alert("Regresé de compartir");
 }
+
 
 
 else{
